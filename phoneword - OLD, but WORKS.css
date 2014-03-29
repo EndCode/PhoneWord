@@ -1,0 +1,92 @@
+* {
+	font-family: AR Julian;
+}
+
+.number {
+	color: red;
+}
+
+.word {
+	color: green;
+}
+
+html {
+	background-color: #292929;
+	padding-right: 150px;
+	padding-bottom: 150px;
+}
+
+input:focus {
+    outline: none;
+}
+
+#title {
+	color: #BDBDBD;
+	font-size: 150px;
+	margin-left: 100px;
+}
+
+::-webkit-input-placeholder {
+   color: #292929;
+   font-size: 30px;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: #292929;
+   font-size: 30px;  
+   vertical-align: center;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #292929;
+   font-size: 30px;
+}
+
+:-ms-input-placeholder {  
+   color: #292929;  
+   font-size: 30px;
+}
+
+#numInput{
+	border-radius: 5px;
+	border: none;
+	background-color: #BDBDBD;
+	padding: 10px;
+	margin-left: 100px;
+	width: 450px;
+	font-size: 30px;
+	position: fixed;
+
+}
+
+#outputBox {
+	width: 500px;
+	background-color: #BDBDBD;
+	float: right;
+	margin-top: 0px;
+	margin-right: 250;
+	border-radius: 5px;
+	font-size: 30px;
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+	visibility: hidden;
+
+}
+
+#outputPre {
+}
+#submitNum{
+	width: 50px;
+	height: 50px;
+	float: left;
+	background-color:#BDBDBD;
+	color: black;
+	margin-left: 590px;
+	border-radius: 5px;
+	font-size: 30px;
+	position: fixed;
+	border: none;
+	margin-top: 5px;
+	padding: 0px;
+}
