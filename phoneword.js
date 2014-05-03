@@ -76,6 +76,17 @@ function convertNum(subsets, number, numList, takenList){
 	}
 }
 
+function colorCode(numList){
+	//breaks the numList into two lists, each containing lists of 3 elements: A number or word, its position in the numList, and whether it is the end of a numWord.
+	//Returns words and nums.
+}
+
+function applyToDoc(words, nums){
+	//Arranges the strings relative to each other to be readable.
+	//Returns nothing.
+	
+}
+
 function phoneWord(){
 	var box = document.getElementById("outputBox");
 	var text = document.getElementById("outputPre");
