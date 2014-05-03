@@ -76,16 +76,77 @@ function convertNum(subsets, number, numList, takenList){
 	}
 }
 
+
+
+
+
+function isNum(text){
+	//Takes in a string, and returns 1 if the characters of the strings are all numbers, and returns 0 otherwise.
+	var nums = "1234567890";
+	for(index = 0; index < text.length; index++){
+		if (nums.indexOf(text[index]) < 0){
+			return 0;
+		}
+	}
+
+	return 1
+}
+
+
+
+
+
 function colorCode(numList){
 	//breaks the numList into two lists, each containing lists of 3 elements: A number or word, its position in the numList, and whether it is the end of a numWord.
-	//Returns words and nums.
+	//Returns words and nums.	
+
+	var words = [];
+	var nums = [];
+	var wrapper = [words, nums]; //Arranged this way so that I can easily place strings or nums into one or the other.
+	var count = 0;
+
+	for (var i = 0; i < numList.length; i++){
+		var numWord = numList[i];
+		var last = 0;
+		var check = isNum(numWord[0]);
+
+		for (var letter = 0; letter < numWord.length; letter++){
+			if (letter == numWord.length - 1){
+				var section = numWord.slice(last);
+				wrapper[check].push([section, 1]);
+				console.log(["EndAddition", [section, count, 1]]);
+				count += 1;
+			}
+
+			if (!(isNum(numWord[letter]) == check)){
+				var section = numWord.slice(last, letter);
+				console.log(["check", check, "letter", letter, "last", last, "numWord", numWord]);
+				wrapper[check].push([section, count, 0]); //If that last bit is 0, the section is not at the end.
+				last = letter;
+				check = isNum(numWord[letter]);
+				console.log(["Addition", [section, count, 0], "New Last", last]);
+				count += 1;
+			}
+		}
+	}
+	return [words, nums];
+
+
 }
+
+
+
+
 
 function applyToDoc(words, nums){
 	//Arranges the strings relative to each other to be readable.
 	//Returns nothing.
-	
+	var sjdfljkadbh = 1;
 }
+
+
+
+
 
 function phoneWord(){
 	var box = document.getElementById("outputBox");
@@ -110,9 +171,9 @@ function phoneWord(){
 	}
 
 	convertNum(subsets, phoneNumber, numList, takenList, newTakenList);
-	console.log(numList);
-	var newNumsString = numList.join("\n");
-	text.innerHTML = newNumsString;
-	box.style.visibility = "visible";
-	return;
+	console.log(["FINAL words", colorCode(numList)[0], "FINAL nums", colorCode(numList)[1]]);
+	//var newNumsString = numList.join("\n");
+	//text.innerHTML = newNumsString;
+	//box.style.visibility = "visible";
+	//return;
 }
