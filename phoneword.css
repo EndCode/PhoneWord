@@ -68,6 +68,7 @@ input:focus {
 	border-radius: 5px;
 	font-size: 30px;
 	padding: 0;
+	padding-left: 15px;
 	text-align: center;
 	vertical-align: middle;
 	visibility: hidden;
@@ -89,4 +90,12 @@ input:focus {
 	border: none;
 	margin-top: 5px;
 	padding: 0px;
+}
+
+.Fucker{
+	height: 100px;
+	width: 500px;
+	//border-width: 2px;
+	//border-style: dotted;
+	//border-color: purple;
 }

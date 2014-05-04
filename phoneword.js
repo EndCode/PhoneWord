@@ -1,3 +1,6 @@
+//TODO: Make sure that if each numWord is the best possible one given the words already chosen.
+
+
 function spaceNotTaken(index, length, takenList, newTakenList){
 	//Determines whether indices of the number are used or not, and assings newTakenList to be the new takenList.
 	for (var i = index; i < index + length;  i++){
@@ -157,8 +160,10 @@ function applyToDoc(words, nums, container){
 			if (words[word][1] == count){
 				if (endCheck == 1){
 					curId = count.toString();
+					console.log(curId)
 					var unitDiv = document.createElement("div");
 					unitDiv.id = curId;
+					unitDiv.className = "Fucker";
 					container.appendChild(unitDiv);
 					endCheck = 0;
 				}
@@ -169,7 +174,7 @@ function applyToDoc(words, nums, container){
 				parag.style.cssFloat = "left";
 				parag.innerHTML = words[word][0];
 
-				if (!(words[word][2] == 1)){
+				if (words[word][2] == 1){
 					endCheck = 1;
 				}
 				count ++;
@@ -182,8 +187,10 @@ function applyToDoc(words, nums, container){
 
 				if (endCheck == 1){
 					curId = count.toString();
+					console.log(curId);
 					var unitDiv = document.createElement("div");
 					unitDiv.id = curId;
+					unitDiv.className = "Fucker";
 					container.appendChild(unitDiv);
 					endCheck = 0;
 				}
@@ -194,7 +201,7 @@ function applyToDoc(words, nums, container){
 				parag.style.cssFloat = "left";
 				parag.innerHTML = nums[num][0];
 
-				if (!(nums[num][2] == 1)){
+				if (nums[num][2] == 1){
 					endCheck = 1;
 				}
 				count ++;
@@ -209,6 +216,7 @@ function applyToDoc(words, nums, container){
 
 function phoneWord(){
 	var box = document.getElementById("outputBox");
+	box.innerHTML = "";
 	var input = document.getElementById("numInput");
 	var phoneNumber = String(input.value);
 	var keyList = Object.keys(numWordDict);
