@@ -111,12 +111,6 @@ function colorCode(numList){
 		var check = isNum(numWord[0]);
 
 		for (var letter = 0; letter < numWord.length; letter++){
-			if (letter == numWord.length - 1){
-				var section = numWord.slice(last);
-				wrapper[check].push([section, 1]);
-				console.log(["EndAddition", [section, count, 1]]);
-				count += 1;
-			}
 
 			if (!(isNum(numWord[letter]) == check)){
 				var section = numWord.slice(last, letter);
@@ -125,6 +119,13 @@ function colorCode(numList){
 				last = letter;
 				check = isNum(numWord[letter]);
 				console.log(["Addition", [section, count, 0], "New Last", last]);
+				count += 1;
+			}
+
+			if (letter == numWord.length - 1){
+				var section = numWord.slice(last);
+				wrapper[check].push([section, count, 1]);
+				console.log(["EndAddition", [section, count, 1]]);
 				count += 1;
 			}
 		}
@@ -138,10 +139,68 @@ function colorCode(numList){
 
 
 
-function applyToDoc(words, nums){
+function applyToDoc(words, nums, container){
 	//Arranges the strings relative to each other to be readable.
 	//Returns nothing.
-	var sjdfljkadbh = 1;
+	//
+	//
+	//
+	//ASSIGN IDS TO EACH NEW UNITDIV. KEEP THEM AS VARIABLES. USE VARIABLE TO ASSIGN PRES AS CHILDREN.
+	var count = 0;	
+	var endCheck = 1;
+	var curId = "";
+
+	while (count < words.length + nums.length){
+
+		for (var word = 0; word < words.length; word++){
+
+			if (words[word][1] == count){
+				if (endCheck == 1){
+					curId = count.toString();
+					var unitDiv = document.createElement("div");
+					unitDiv.id = curId;
+					container.appendChild(unitDiv);
+					endCheck = 0;
+				}
+
+				var parag = document.createElement("pre");
+				document.getElementById(curId).appendChild(parag);
+				parag.style.color = "green";
+				parag.style.cssFloat = "left";
+				parag.innerHTML = words[word][0];
+
+				if (!(words[word][2] == 1)){
+					endCheck = 1;
+				}
+				count ++;
+			}
+		}
+
+		for (var num = 0; num < nums.length; num++){
+
+			if (nums[num][1] == count){
+
+				if (endCheck == 1){
+					curId = count.toString();
+					var unitDiv = document.createElement("div");
+					unitDiv.id = curId;
+					container.appendChild(unitDiv);
+					endCheck = 0;
+				}
+
+				var parag = document.createElement("pre");
+				document.getElementById(curId).appendChild(parag);
+				parag.style.color = "red";
+				parag.style.cssFloat = "left";
+				parag.innerHTML = nums[num][0];
+
+				if (!(nums[num][2] == 1)){
+					endCheck = 1;
+				}
+				count ++;
+			}
+		}
+	}
 }
 
 
@@ -150,7 +209,6 @@ function applyToDoc(words, nums){
 
 function phoneWord(){
 	var box = document.getElementById("outputBox");
-	var text = document.getElementById("outputPre");
 	var input = document.getElementById("numInput");
 	var phoneNumber = String(input.value);
 	var keyList = Object.keys(numWordDict);
@@ -171,9 +229,13 @@ function phoneWord(){
 	}
 
 	convertNum(subsets, phoneNumber, numList, takenList, newTakenList);
-	console.log(["FINAL words", colorCode(numList)[0], "FINAL nums", colorCode(numList)[1]]);
+	var result = colorCode(numList);
+	var words = result[0];
+	var num = result[1];
+	console.log(["FINAL words", words, "FINAL nums", num]);
+	applyToDoc(words, num, box);
 	//var newNumsString = numList.join("\n");
 	//text.innerHTML = newNumsString;
-	//box.style.visibility = "visible";
-	//return;
+	box.style.visibility = "visible";
+	return;
 }
