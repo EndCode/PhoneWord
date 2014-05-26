@@ -56,7 +56,10 @@ function makeAllSubsets(text){
 
 
 function convertNum(subsets, number, numList, takenList){
+	//Better idea: for each recur, you hae a base case where you return nothing. The base case activates
+	//if no words can be inserted. Each recur returns (next recur + new word + next recur)
 	var tempTakenList = takenList.slice(0);
+	var endCheck = 1;
 
 	for (var i = 0; i < subsets.length; i++){ //for each subset
 		var takenList = tempTakenList.slice(0);
@@ -65,19 +68,40 @@ function convertNum(subsets, number, numList, takenList){
 		var index = pair[1];
 
 		if (spaceNotTaken(index, num.length, takenList)){ //if the space for the words connected to the num has not been used
+			endCheck = 0;
 
 			for (var x = 0; x < numWordDict[num].length; x++){ //for each word connected to num
 				var word = numWordDict[num][x]
 				var newCombo = number.slice(0, index) + word + number.slice(index + word.length);
 
 				if (numList.indexOf(newCombo) < 0){
-					numList.push(newCombo);
 					convertNum(subsets, newCombo, numList, takenList.slice(0));
 				}
 			}
+
 		}
 	}
+	if (endCheck == 1){
+		numList.push(number);
+	}
+
 }
+
+
+
+
+//New functions: 
+//convertNum takes subsets, numList, takenList, number
+//assigns starting words to put into number
+//other function takes words, continues along that path
+//Only returns fully modified numWords.
+//returns new numList, + all words that it used so that they aren't repeated.
+
+
+/*function convertNum(subsets, number, numList, takenList){
+
+for subsets:
+	getNumWord(subset, subsets, takenList, numList);*/
 
 
 
@@ -163,7 +187,7 @@ function applyToDoc(words, nums, container){
 					console.log(curId)
 					var unitDiv = document.createElement("div");
 					unitDiv.id = curId;
-					unitDiv.className = "Fucker";
+					unitDiv.className = "unitDivs";
 					container.appendChild(unitDiv);
 					endCheck = 0;
 				}
@@ -172,6 +196,7 @@ function applyToDoc(words, nums, container){
 				document.getElementById(curId).appendChild(parag);
 				parag.style.color = "green";
 				parag.style.cssFloat = "left";
+				parag.style.margin = "0px";
 				parag.innerHTML = words[word][0];
 
 				if (words[word][2] == 1){
@@ -190,7 +215,7 @@ function applyToDoc(words, nums, container){
 					console.log(curId);
 					var unitDiv = document.createElement("div");
 					unitDiv.id = curId;
-					unitDiv.className = "Fucker";
+					unitDiv.className = "unitDivs";
 					container.appendChild(unitDiv);
 					endCheck = 0;
 				}
@@ -199,6 +224,7 @@ function applyToDoc(words, nums, container){
 				document.getElementById(curId).appendChild(parag);
 				parag.style.color = "red";
 				parag.style.cssFloat = "left";
+				parag.style.margin = "0px";
 				parag.innerHTML = nums[num][0];
 
 				if (nums[num][2] == 1){
@@ -244,6 +270,60 @@ function phoneWord(){
 	applyToDoc(words, num, box);
 	//var newNumsString = numList.join("\n");
 	//text.innerHTML = newNumsString;
+	box.style.visibility = "visible";
+	return;
+}
+
+/*function wordToNum(){
+	var box = document.getElementById("outputBox");
+	box.innerHTML = "";
+	var input = document.getElementById("wordInput");
+	var word = String(input.value);
+	word = word.toUpperCase();
+	var keyList = Object.keys(numWordDict);
+
+	for (var keyInd = 0; keyInd < keyList.length; keyInd++){
+		//alert("WHAT DA FUQ?");
+		var checkArray = numWordDict[keyList[keyInd]];
+		for (var checkInd = 0; checkInd < checkArray.length; checkInd++){
+			var check = checkArray[checkInd];
+			if (check == word){
+				var parag = document.createElement("pre");
+				box.appendChild(parag);
+				parag.style.cssFloat = "left";
+				parag.style.color = "red";
+				parag.innerHTML = keyList[keyInd].toString();
+				box.style.visibility = "visible";
+				return;
+			}
+		}
+	}
+}*/
+
+function wordToNum(){
+	var box = document.getElementById("outputBox");
+	box.innerHTML = "";
+	var input = document.getElementById("wordInput");
+	var word = String(input.value);
+	word = word.toUpperCase();
+	numLetDict = 	{"A": "2", "B": "2", "C": "2", "D": "3",
+	       		"E": "3", "F": "3", "G": "4", "H": "4", 
+			"I": "4", "J": "5", "K": "5", "L": "5", 
+			"M": "6", "N": "6", "O": "6", "P": "7", 
+			"Q": "7", "R": "7", "S": "7", "T": "8", 
+			"U": "8", "V": "8", "W": "9", "X": "9", 
+			"Y": "9", "Z": "9"}
+	newNum = "";
+	for (ind = 0; ind < word.length; ind++){
+		letter = word[ind];
+		newNum = newNum.concat(numLetDict[letter]);
+		console.log("SHIT ASS FUCK");
+	}
+	var parag = document.createElement("pre");
+	box.appendChild(parag);
+	parag.style.cssFloat = "left";
+	parag.style.color = "red";
+	parag.innerHTML = newNum;
 	box.style.visibility = "visible";
 	return;
 }
