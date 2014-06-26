@@ -1,8 +1,13 @@
-//TODO: Make sure that if each numWord is the best possible one given the words already chosen.
+//TODO: change spaceNotTaken and convertNum
 
+window.onload = function() {
+ 
+    alert( "welcome" );
+ 
+}
 
-function spaceNotTaken(index, length, takenList, newTakenList){
-	//Determines whether indices of the number are used or not, and assings newTakenList to be the new takenList.
+function spaceNotTaken(index, length, takenList){
+	//Determines whether indices of the number are used or not.
 	for (var i = index; i < index + length;  i++){
 		if (takenList.indexOf(i) > -1){
 			return false;
@@ -26,11 +31,17 @@ function makeSubsets(text, size){
 	var usableLength = textLength - size;
 	var subsetList = [];
 
-	for (var index = 0; index <= usableLength; index++){
-		var subset = text.slice(index, index + size);
 
-		if (keyList.indexOf(subset) > -1){
-			subsetList.push([subset, index]);
+	for (var index = 0; index <= usableLength; index++){
+		var numSubset = text.slice(index, index + size);
+		
+		if (keyList.indexOf(numSubset) > -1){
+
+			for (var i = 0; i < numWordDict[numSubset].length; i++){
+				var word = numWordDict[numSubset][i];
+				var subset = [word, index];
+				subsetList.push(subset);
+			}
 		}
 	}
 
@@ -43,6 +54,8 @@ function makeSubsets(text, size){
 
 function makeAllSubsets(text){
 	//creates all subsets of any size from the given text
+	//Returns a list of lists, where each contained list has a string as the first elements and an index of its place in the number as the second.
+	//Confirmed working
 	var subsetList = [];
 
 	for (var size = 1; size <= text.length; size++){
@@ -55,32 +68,69 @@ function makeAllSubsets(text){
 
 
 
+function reduceSubsets(subsets){
+	// Not all subsets are needed. For example, the subset "a" is not needed if you have the subset "ad" in the same place.
+	// Confirmed functioning
+	var subsetIndices = [];
+	var newSubsets = [];
+
+	for (var index = 0; index < subsets.length; index++){
+		subset = subsets[index];
+		bigWord = subset[0];
+		bigStart = subset[1];
+		bigEnd = bigStart + bigWord.length;
+		
+		for (var ind = 0; ind < subsets.length; ind++){
+			smallSubset = subsets[ind];
+			smallWord = smallSubset[0];
+			smallStart = smallSubset[1];
+			smallEnd = smallStart + smallWord.length;
+
+			if ((bigWord.indexOf(smallWord) > -1) && (bigWord != smallWord)){	
+				if ((bigStart <= smallStart) && (bigEnd >= smallEnd)){
+					subsetIndices.push(ind);
+				}
+			}
+		}
+	}
+
+	for (var i = 0; i < subsets.length; i++){
+		if (!(subsetIndices.indexOf(i) > -1)){
+			newSubsets.push(subsets[i]);
+		}
+	}
+
+	return newSubsets;
+}
+
+
+
+
 function convertNum(subsets, number, numList, takenList){
-	//Better idea: for each recur, you hae a base case where you return nothing. The base case activates
-	//if no words can be inserted. Each recur returns (next recur + new word + next recur)
+	//FIIIIIXXX Subsets format changed
+	//Given the subsets from makeAllSubsets, makes all the possible numWords.
 	var tempTakenList = takenList.slice(0);
 	var endCheck = 1;
 
 	for (var i = 0; i < subsets.length; i++){ //for each subset
 		var takenList = tempTakenList.slice(0);
 		var pair = subsets[i];
-		var num = pair[0];
+		var word = pair[0];
 		var index = pair[1];
 
-		if (spaceNotTaken(index, num.length, takenList)){ //if the space for the words connected to the num has not been used
+		if (spaceNotTaken(index, word.length, takenList)){ //if the space for the words connected to the num has not been used
 			endCheck = 0;
+			takenList.slice(i, 1) // Fix syntax
+			// At this point, can you remove the subset?
+			var newCombo = number.slice(0, index) + word + number.slice(index + word.length);
 
-			for (var x = 0; x < numWordDict[num].length; x++){ //for each word connected to num
-				var word = numWordDict[num][x]
-				var newCombo = number.slice(0, index) + word + number.slice(index + word.length);
-
-				if (numList.indexOf(newCombo) < 0){
-					convertNum(subsets, newCombo, numList, takenList.slice(0));
-				}
+			if (numList.indexOf(newCombo) < 0){
+				convertNum(subsets, newCombo, numList, takenList.slice(0));
 			}
 
 		}
 	}
+
 	if (endCheck == 1){
 		numList.push(number);
 	}
@@ -90,27 +140,11 @@ function convertNum(subsets, number, numList, takenList){
 
 
 
-//New functions: 
-//convertNum takes subsets, numList, takenList, number
-//assigns starting words to put into number
-//other function takes words, continues along that path
-//Only returns fully modified numWords.
-//returns new numList, + all words that it used so that they aren't repeated.
-
-
-/*function convertNum(subsets, number, numList, takenList){
-
-for subsets:
-	getNumWord(subset, subsets, takenList, numList);*/
-
-
-
-
 
 function isNum(text){
 	//Takes in a string, and returns 1 if the characters of the strings are all numbers, and returns 0 otherwise.
 	var nums = "1234567890";
-	for(index = 0; index < text.length; index++){
+	for(var index = 0; index < text.length; index++){
 		if (nums.indexOf(text[index]) < 0){
 			return 0;
 		}
@@ -183,7 +217,7 @@ function applyToDoc(words, nums, container){
 
 			if (words[word][1] == count){
 				if (endCheck == 1){
-					curId = count.toString();
+					curId = "a" + count.toString();
 					console.log(curId)
 					var unitDiv = document.createElement("div");
 					unitDiv.id = curId;
@@ -211,7 +245,7 @@ function applyToDoc(words, nums, container){
 			if (nums[num][1] == count){
 
 				if (endCheck == 1){
-					curId = count.toString();
+					curId = "a" + count.toString();
 					console.log(curId);
 					var unitDiv = document.createElement("div");
 					unitDiv.id = curId;
@@ -241,6 +275,7 @@ function applyToDoc(words, nums, container){
 
 
 function phoneWord(){
+	//Wrapper function that is called by the page
 	var box = document.getElementById("outputBox");
 	box.innerHTML = "";
 	var input = document.getElementById("numInput");
@@ -249,6 +284,7 @@ function phoneWord(){
 	var nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 	var numList = [];
 	var subsets = makeAllSubsets(phoneNumber);
+	subsets = reduceSubsets(subsets);
 	var takenList = [];
 	var newTakenList = [];
 
@@ -274,52 +310,32 @@ function phoneWord(){
 	return;
 }
 
-/*function wordToNum(){
-	var box = document.getElementById("outputBox");
-	box.innerHTML = "";
-	var input = document.getElementById("wordInput");
-	var word = String(input.value);
-	word = word.toUpperCase();
-	var keyList = Object.keys(numWordDict);
 
-	for (var keyInd = 0; keyInd < keyList.length; keyInd++){
-		//alert("WHAT DA FUQ?");
-		var checkArray = numWordDict[keyList[keyInd]];
-		for (var checkInd = 0; checkInd < checkArray.length; checkInd++){
-			var check = checkArray[checkInd];
-			if (check == word){
-				var parag = document.createElement("pre");
-				box.appendChild(parag);
-				parag.style.cssFloat = "left";
-				parag.style.color = "red";
-				parag.innerHTML = keyList[keyInd].toString();
-				box.style.visibility = "visible";
-				return;
-			}
-		}
-	}
-}*/
+
+
 
 function wordToNum(){
+	// Converts a given word to its corresponding phone number through a letter:number dictionary
 	var box = document.getElementById("outputBox");
 	box.innerHTML = "";
 	var input = document.getElementById("wordInput");
 	var word = String(input.value);
 	word = word.toUpperCase();
-	numLetDict = 	{"A": "2", "B": "2", "C": "2", "D": "3",
+	var numLetDict = 	{"A": "2", "B": "2", "C": "2", "D": "3",
 	       		"E": "3", "F": "3", "G": "4", "H": "4", 
 			"I": "4", "J": "5", "K": "5", "L": "5", 
 			"M": "6", "N": "6", "O": "6", "P": "7", 
 			"Q": "7", "R": "7", "S": "7", "T": "8", 
 			"U": "8", "V": "8", "W": "9", "X": "9", 
 			"Y": "9", "Z": "9"}
-	newNum = "";
-	for (ind = 0; ind < word.length; ind++){
-		letter = word[ind];
+	var newNum = "";
+
+	for (var ind = 0; ind < word.length; ind++){
+		var letter = word[ind];
 		newNum = newNum.concat(numLetDict[letter]);
-		console.log("SHIT ASS FUCK");
 	}
 	var parag = document.createElement("pre");
+	parag.id = "wordTranslate";
 	box.appendChild(parag);
 	parag.style.cssFloat = "left";
 	parag.style.color = "red";
